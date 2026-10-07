@@ -1,4 +1,4 @@
-base_url = "http://argmax-ch.github.io/website/"
+base_url = "https://www.argmax.ch"
 title = "argmax"
 description = "Argmax builds decision systems that perform when it matters most — under uncertainty, in the worst case."
 default_language = "en"
