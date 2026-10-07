@@ -1,5 +1,4 @@
-# TODO: Set to the production domain before deploying
-base_url = "https://argmax.ch"
+base_url = "http://argmax-ch.github.io/website/"
 title = "argmax"
 description = "Argmax builds decision systems that perform when it matters most — under uncertainty, in the worst case."
 default_language = "en"
@@ -17,8 +16,6 @@ theme = "Night Owl Light"
 extra_themes = ["highlight-themes/night-owl-light.json"]
 
 [extra]
-# Homepage artwork: file name (without .html) in templates/animations/
-# Options: cascade, monte-carlo, scenario-tree, trajectory-optimization
 home_animation = "scenario-tree"
 logotype = "argmax"
 
@@ -50,7 +47,6 @@ children = [
 name = "Blog"
 url = "/blog/"
 
-# TODO
 [[extra.footer]]
 name = "LinkedIn"
 url = "https://www.linkedin.com/"
