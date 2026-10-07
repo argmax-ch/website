@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
+{% block description %}{{ section.description }}{% endblock description %}
+{% block body_class %}blog{% endblock body_class %}
+
+{% block content %}
+<main class="blog-main">
+  <!-- Same centred column as the blog index; one block per sub-nav anchor. -->
+  <section class="post-index">
+    <h1 class="post-index__label">{{ section.title }}</h1>
+    <div class="info-sections">
+      {%- for s in section.extra.sections %}
+      <section class="info-section" id="{{ s.id }}">
+        <h2 class="info-section__title">{{ s.title }}</h2>
+        <p>{{ s.text }}</p>
+      </section>
+      {%- endfor %}
+    </div>
+  </section>
+
+  {% include "partials/footer.html" %}
+</main>
+{% endblock content %}

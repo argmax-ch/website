@@ -1,0 +1,8 @@
+{#- Display equation whose TeX bypasses Markdown, so backslash escapes
+    (\{ \; \, \\) survive. Usage in a post:
+      {% math() %}
+      \min_{x} \; \{ f(x) : x \in X \}
+      {% end %}
+    KaTeX auto-render picks up the $$ delimiters. `escape` only encodes
+    < > & " for HTML; KaTeX reads the decoded text back. -#}
+<div class="math-display">$${{ body | trim | escape | safe }}$$</div>

@@ -1,0 +1,35 @@
+{#- `current_path` is set on pages and sections; it is undefined on 404. -#}
+{%- set here = current_path | default(value="") -%}
+<header class="site-header">
+  <!-- Hidden checkbox drives the mobile menu: CSS-only toggle, no JavaScript. -->
+  <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Toggle menu">
+
+  <div class="header-grid">
+    <a class="nav-home" href="{{ get_url(path='/') }}">
+      <span class="logotype">{{ config.extra.logotype }}</span>
+    </a>
+
+    <label for="menu-toggle" class="menu-button">
+      <span class="menu-open">Menu</span>
+      <span class="menu-close">Close</span>
+      <span class="menu-arrow" aria-hidden="true">↓</span>
+    </label>
+
+    <nav class="main-nav" aria-label="Main">
+      <ul class="main-nav__list">
+        {%- for item in config.extra.nav %}
+        <li>
+          <a class="nav-item" href="{{ item.url | safe }}"{% if here is starting_with(item.url) %} aria-current="page"{% endif %}>{{ item.name }}</a>
+          {%- if item.children %}
+          <ul class="sub-nav">
+            {%- for child in item.children %}
+            <li><a href="{{ child.url | safe }}">{{ child.name }}</a></li>
+            {%- endfor %}
+          </ul>
+          {%- endif %}
+        </li>
+        {%- endfor %}
+      </ul>
+    </nav>
+  </div>
+</header>

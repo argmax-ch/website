@@ -1,0 +1,8 @@
+<footer class="site-footer">
+  {%- for link in config.extra.footer %}
+  {%- if not loop.first %}
+  <span class="separator">|</span>
+  {%- endif %}
+  <a href="{{ link.url | safe }}">{{ link.name }}</a>
+  {%- endfor %}
+</footer>

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
+{% block description %}{{ section.description }}{% endblock description %}
+{% block body_class %}blog{% endblock body_class %}
+
+{% block content %}
+<main class="blog-main">
+  <!-- A single centred column read like a table of contents:
+       numeral · title · date · arrow, newest first. -->
+  <section class="post-index">
+    <h1 class="post-index__label">{{ section.title }}</h1>
+    <div class="post-index__meta">
+      <span>{{ section.pages | length }} {% if section.pages | length == 1 %}post{% else %}posts{% endif %}</span>
+      <a href="{{ get_url(path='atom.xml', trailing_slash=false) | safe }}">feed</a>
+    </div>
+
+    {%- if section.pages %}
+    <ul class="post-rows">
+      {%- for page in section.pages %}
+      <li>
+        <a class="post-row" href="{{ page.permalink | safe }}">
+          <span class="post-row__title">{{ page.title }}</span>
+          {%- if page.date %}
+          <time class="post-row__date" datetime="{{ page.date }}">{{ page.date | date(format="%-d %b %Y") }}</time>
+          {%- endif %}
+          <span class="post-row__arrow" aria-hidden="true">→</span>
+        </a>
+        {%- if page.extra.category %}
+        <div class="post-row__tags"><span class="tag-chip">{{ page.extra.category }}</span></div>
+        {%- endif %}
+      </li>
+      {%- endfor %}
+    </ul>
+    {%- else %}
+    <p class="post-index__empty">No posts yet.</p>
+    {%- endif %}
+  </section>
+
+  {% include "partials/footer.html" %}
+</main>
+{% endblock content %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block body_class %}home{% endblock body_class %}
+
+{% block content %}
+<main class="home-main">
+  <!-- Left: visual column. -->
+  <div class="image-column">
+    <div class="image-track">
+      <div class="panel panel--image">
+        {% if config.extra.home_animation == "cascade" %}
+          {% include "animations/cascade.html" %}
+        {% elif config.extra.home_animation == "monte-carlo" %}
+          {% include "animations/monte-carlo.html" %}
+        {% elif config.extra.home_animation == "scenario-tree" %}
+          {% include "animations/scenario-tree.html" %}
+        {% elif config.extra.home_animation == "trajectory-optimization" %}
+          {% include "animations/trajectory-optimization.html" %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: full-height statements, defined in content/_index.md. -->
+  <div class="text-column">
+    {%- for statement in section.extra.statements %}
+    <section class="statement">
+      <h2>{{ statement.text }}</h2>
+      <a class="highlight" href="{{ statement.url | safe }}">{{ statement.link }} ↗︎</a>
+    </section>
+    {%- endfor %}
+
+    {% include "partials/footer.html" %}
+  </div>
+</main>
+<script defer src="{{ get_url(path='js/scroll-animation.js', cachebust=true) | safe }}"></script>
+{% endblock content %}

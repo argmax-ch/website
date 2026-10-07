@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} — {{ config.title }}{% endblock title %}
+{% block description %}{{ page.description | default(value=config.description) }}{% endblock description %}
+{% block body_class %}blog{% endblock body_class %}
+
+{% block content %}
+{%- set blog_url = get_url(path="@/blog/_index.md") -%}
+<main class="blog-main">
+  <article class="post">
+    <header class="post-head">
+      <a class="post-back" href="{{ blog_url | safe }}">← All posts</a>
+      <h1 class="post-title">{{ page.title }}</h1>
+      <p class="post-meta">
+        {%- if page.date %}<time datetime="{{ page.date }}">{{ page.date | date(format="%-d %B %Y") }}</time>{% endif -%}
+        {%- if page.extra.category %} · {{ page.extra.category }}{% endif -%}
+      </p>
+      {%- if page.description %}
+      <p class="post-lede">{{ page.description }}</p>
+      {%- endif %}
+    </header>
+
+    <div class="post-body">
+      {{ page.content | safe }}
+    </div>
+
+    <footer class="post-foot">
+      <a class="post-back" href="{{ blog_url | safe }}">← All posts</a>
+    </footer>
+  </article>
+
+  {% include "partials/footer.html" %}
+</main>
+{%- if page.content is containing("<pre") %}
+<script defer src="{{ get_url(path='js/copy-code.js', cachebust=true) | safe }}"></script>
+{%- endif %}
+{% endblock content %}

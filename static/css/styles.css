@@ -1,0 +1,867 @@
+/* ==========================================================================
+   Argmax — site styles
+   Plain CSS, no build step. Layout inspired by a split-screen editorial
+   home page: fixed hairline nav, visual column left, statements right.
+   ========================================================================== */
+
+/* ---------- Tokens ----------
+   Type and palette match the personal blog (gstechschulte.github.io):
+   EB Garamond throughout, "rag paper + printer ink" palette.
+   Light mode only: the page ignores the OS dark-mode setting. */
+:root {
+  --ink: #231f1a;          /* printer ink */
+  --ink-soft: #857a66;     /* blog --muted */
+  --rule: #d9ccb8;         /* blog --border */
+  --bg: #f4ebdd;           /* rag paper */
+  --bg-transparent: rgba(244, 235, 221, 0);
+  --tint: #e5d7bf;         /* blog --hover-bg-2 */
+  --accent: #35566b;       /* blog code builtins (slate blue) */
+  --accent-warm: #9c4f28;  /* blog --badge-text (rust) */
+
+  --spacer: 1rem;
+  --header-h: 6.5rem;
+
+  --font-body: "EB Garamond", ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --code-bg: #ece0cb;      /* blog --hover-bg: inline code pill */
+
+  color-scheme: light only;
+}
+
+/* Spaced small capitals, like the blog's meta line / running heads. */
+
+.main-nav,
+.menu-button,
+.highlight,
+.site-footer {
+  font-variant: small-caps;
+  font-feature-settings: "smcp" 1, "lnum" 1, "kern" 1;
+  letter-spacing: 0.07em;
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-feature-settings: "onum" 1, "pnum" 1, "kern" 1;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-weight: 400;
+}
+
+a {
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  padding: var(--spacer) var(--spacer) 2.5rem;
+  /* Fade the page out under the nav instead of a hard bar. */
+  background-image: linear-gradient(var(--bg) 55%, var(--bg-transparent) 100%);
+  /* The fade area must not swallow clicks on content below it. */
+  pointer-events: none;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+}
+
+.header-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--spacer);
+  pointer-events: auto;
+}
+
+.nav-home,
+.main-nav__list > li,
+.menu-button {
+  border-top: 1px solid var(--ink);
+  padding-top: 0.625rem;
+}
+
+.nav-home {
+  grid-column: span 4;
+  text-decoration: none;
+}
+
+.logotype {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.main-nav {
+  grid-column: span 8;
+}
+
+.main-nav__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  column-gap: var(--spacer);
+}
+
+/* Zero height + visible overflow: sub-menus drop down without
+   pushing the header taller. */
+.main-nav__list > li {
+  height: 0;
+  overflow: visible;
+}
+
+.nav-item,
+.sub-nav a {
+  text-decoration: none;
+}
+
+.nav-item:hover,
+.nav-item:focus-visible,
+.sub-nav a:hover,
+.sub-nav a:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.sub-nav {
+  padding-top: 0.25rem;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.sub-nav li {
+  padding: 0.125rem 0 0.125rem var(--spacer);
+}
+
+.main-nav__list > li:hover .sub-nav,
+.main-nav__list > li:focus-within .sub-nav {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* Mobile menu toggle (checkbox hack) */
+.menu-toggle {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.menu-button {
+  display: none;
+  grid-column: span 8;
+  cursor: pointer;
+  user-select: none;
+}
+
+.menu-close {
+  display: none;
+}
+
+.menu-arrow {
+  display: inline-block;
+  margin-left: 0.35rem;
+  transition: transform 0.2s ease;
+}
+
+.menu-toggle:focus-visible + .header-grid .menu-button {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* ---------- Home layout ---------- */
+.home-main {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--spacer);
+  padding: 0 var(--spacer);
+}
+
+.image-column {
+  grid-column: 1 / span 6;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  /* Keep the artwork clear of the nav. */
+  padding-top: var(--header-h);
+  padding-bottom: var(--spacer);
+}
+
+.image-track {
+  height: 100%;
+}
+
+.panel {
+  height: 100%;
+  border-radius: 2px;
+}
+
+.text-column {
+  grid-column: 7 / span 6;
+}
+
+.statement {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: var(--header-h) 0 var(--spacer);
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+.statement h2 {
+  font-size: clamp(1.75rem, 1.1rem + 1.6vw, 2.5rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.highlight {
+  align-self: flex-start;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  text-decoration: none;
+  padding: 0.15rem 0.4rem;
+  margin-left: -0.4rem;
+  background: linear-gradient(var(--tint), var(--tint)) no-repeat left / 0% 100%;
+  transition: background-size 0.3s ease;
+}
+
+.highlight:hover,
+.highlight:focus-visible {
+  background-size: 100% 100%;
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.625rem 0 var(--spacer);
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+.site-footer a {
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.separator {
+  color: var(--ink-soft);
+}
+
+/* ---------- Blog ----------
+   One centred column, no sidebar. The index reads like a table of
+   contents (numeral · title · date · arrow) under a ruled line with
+   small-cap labels sitting on it; posts are a single reading measure. */
+.nav-item[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.blog-main {
+  display: flex;
+  flex-direction: column;
+  max-width: calc(44rem + 2 * var(--spacer));
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: calc(var(--header-h) + 3rem) var(--spacer) 0;
+}
+
+.blog-main > .site-footer {
+  margin-top: auto;
+}
+
+.post-index__label,
+.post-index__meta,
+.post-row__date,
+.tag-chip,
+.post-back,
+.post-meta {
+  color: var(--ink-soft);
+  font-variant: small-caps;
+  font-feature-settings: "smcp" 1, "lnum" 1, "kern" 1;
+  letter-spacing: 0.07em;
+}
+
+/* Index */
+.post-index {
+  position: relative;
+  padding-bottom: 6rem;
+}
+
+/* Labels straddle the top rule: section name left, count + feed right. */
+.post-index__label,
+.post-index__meta {
+  position: absolute;
+  top: -0.75em;
+  margin: 0;
+  background-color: var(--bg);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.post-index__label {
+  left: 0;
+  padding-right: 0.6rem;
+  font-weight: 400;
+}
+
+.post-index__meta {
+  right: 0;
+  display: flex;
+  gap: 0.85rem;
+  padding-left: 0.6rem;
+}
+
+.post-index__meta a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.post-index__meta a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.post-index__empty {
+  padding-top: 2rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+/* Placeholder info pages (About, Work, Join, Partnerships). */
+.info-sections {
+  border-top: 1px solid var(--rule);
+}
+
+.info-section {
+  padding-top: 2rem;
+  /* Keep anchored headings clear of the fixed header. */
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+
+.info-section__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+
+.post-rows {
+  counter-reset: post;
+  border-top: 1px solid var(--rule);
+}
+
+.post-rows li {
+  counter-increment: post;
+  border-bottom: 1px solid var(--rule);
+}
+
+.post-row {
+  display: flex;
+  align-items: baseline;
+  padding: 0.9rem 0.25rem 0.4rem 0;
+  text-decoration: none;
+}
+
+/* Hanging roman numeral, generated by a CSS counter: no template logic. */
+.post-row::before {
+  content: counter(post, lower-roman);
+  flex: 0 0 2.5rem;
+  color: var(--ink-soft);
+  font-variant: small-caps;
+  font-feature-settings: "smcp" 1, "kern" 1;
+  letter-spacing: 0.07em;
+  transition: color 0.15s ease;
+}
+
+.post-row__title {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-size: 1.35rem;
+  line-height: 1.3;
+  transition: color 0.15s ease;
+}
+
+.post-row__date {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding-left: 1.5rem;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.post-row__arrow {
+  flex: 0 0 auto;
+  margin-left: 0.85rem;
+  color: var(--ink-soft);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.post-row:hover::before,
+.post-row:hover .post-row__date,
+.post-row:hover .post-row__arrow,
+.post-row:focus-visible .post-row__arrow {
+  color: var(--accent);
+}
+
+.post-row:hover .post-row__title,
+.post-row:focus-visible .post-row__title {
+  color: var(--accent);
+}
+
+.post-row:hover .post-row__arrow,
+.post-row:focus-visible .post-row__arrow {
+  transform: translateX(0.3rem);
+}
+
+.post-row__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0 0 0.9rem 2.5rem;
+}
+
+.tag-chip {
+  padding: 0 0.55rem 0.05rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Single post */
+.post {
+  padding-bottom: 6rem;
+}
+
+.post-back {
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.post-back:hover,
+.post-back:focus-visible {
+  color: var(--accent);
+}
+
+.post-head {
+  margin-bottom: 2.5rem;
+}
+
+.post-title {
+  margin: 1rem 0 0.75rem;
+  font-size: clamp(2rem, 1.2rem + 3vw, 3rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.post-meta {
+  margin: 0;
+}
+
+.post-lede {
+  margin: 1.5rem 0 0;
+  font-size: 1.35rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.post-body {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.post-body p {
+  margin: 1rem 0 0;
+  hyphens: auto;
+}
+
+/* Drop capital on the opening paragraph only, as on the personal blog. */
+.post-body > p:first-child::first-letter {
+  float: left;
+  padding: 0.02em 0.09em 0 0;
+  margin-top: 0.02em;
+  font-size: 3.4em;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 0.78;
+}
+
+.post-body h2,
+.post-body h3 {
+  margin: 2.5rem 0 0;
+  font-weight: 500;
+  font-variant: small-caps;
+  font-feature-settings: "smcp" 1, "lnum" 1, "kern" 1;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+}
+
+.post-body h2 { font-size: 1.55rem; }
+.post-body h3 { font-size: 1.3rem; }
+
+.post-body a {
+  color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+.post-body blockquote {
+  margin: 2rem 0 0;
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--accent-warm);
+}
+
+.post-body blockquote p {
+  margin: 0;
+  font-size: 1.2em;
+  line-height: 1.4;
+}
+
+/* Code: matches the Subject To blog (Expressive Code, Night Owl Light).
+   Token colors come from highlight-themes/night-owl-light.json, already
+   contrast-adjusted the way Expressive Code does it. */
+.post-body code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+}
+
+.post-body pre {
+  clear: both;  /* never wrap beside the drop capital */
+  margin: 1.5rem 0 0;
+  /* 1.25rem frame padding + Expressive Code's 14.5px line inset. */
+  padding: 1.1rem 1.25rem 1.1rem calc(1.25rem + 14.5px);
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  /* giallo writes the theme's own background inline; use the paper. */
+  background-color: transparent !important;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Block-level so line boxes take the code's 0.88em size: 1.6 × 12.67px
+   lines, exactly Expressive Code's rhythm (not the pre's 14.4px strut). */
+.post-body pre code {
+  display: block;
+  padding: 0;
+  background: none;
+}
+
+/* Copy button (added by js/copy-code.js). Geometry, icon and behaviour
+   follow Expressive Code; colours come from this palette. */
+.code-frame {
+  position: relative;
+  clear: both;
+  margin-top: 1.5rem;
+}
+
+.code-frame > pre {
+  margin-top: 0;
+}
+
+/* Keep the first line clear of the button. */
+.code-frame .giallo-l:first-child {
+  padding-right: 2.5rem;
+}
+
+.code-copy {
+  position: absolute;
+  top: calc(1px + 0.4rem);
+  right: calc(1px + 0.5rem);
+  display: flex;
+  gap: 0.25rem;
+  direction: ltr;
+}
+
+.code-copy button {
+  position: relative;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0.2rem;
+  background: var(--bg);
+  opacity: 0.75;
+  cursor: pointer;
+  transition: opacity 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Hover/press wash. */
+.code-copy button div {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--ink-soft);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Hairline outline. */
+.code-copy button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--ink-soft);
+  border-radius: inherit;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Copy icon (Expressive Code's), tinted via mask. */
+.code-copy button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: 0.475rem;
+  background-color: var(--ink-soft);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75'%3E%3Cpath d='M3 19a2 2 0 0 1-1-2V2a2 2 0 0 1 1-1h13a2 2 0 0 1 2 1'/%3E%3Crect x='6' y='5' width='16' height='18' rx='1.5' ry='1.5'/%3E%3C/svg%3E") no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75'%3E%3Cpath d='M3 19a2 2 0 0 1-1-2V2a2 2 0 0 1 1-1h13a2 2 0 0 1 2 1'/%3E%3Crect x='6' y='5' width='16' height='18' rx='1.5' ry='1.5'/%3E%3C/svg%3E") no-repeat;
+  pointer-events: none;
+}
+
+.code-copy button:hover,
+.code-copy button:focus-visible,
+.code-copy button:active {
+  opacity: 1;
+}
+
+.code-copy button:hover::after,
+.code-copy button:focus-visible::after {
+  background-color: var(--ink);
+}
+
+.code-copy button:hover div,
+.code-copy button:focus-visible div { opacity: 0.2; }
+.code-copy button:active div { opacity: 0.3; }
+
+.code-copy button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Mouse users: hidden until the block is hovered, and a little smaller. */
+@media (hover: hover) {
+  .code-copy button {
+    width: 2rem;
+    height: 2rem;
+    opacity: 0;
+  }
+
+  .code-frame:hover .code-copy button:not(:hover),
+  .code-copy:focus-within button:not(:hover),
+  .code-copy__feedback.is-shown ~ button:not(:hover) {
+    opacity: 0.75;
+  }
+}
+
+.code-copy [aria-live] {
+  display: flex;
+  align-items: center;
+}
+
+.code-copy__feedback {
+  --arrow: 0.35rem;
+  position: relative;
+  margin-right: var(--arrow);
+  padding: 0.125rem 0.75rem;
+  border-radius: 0.2rem;
+  background: #078662;  /* Expressive Code's success green on this theme */
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  transform: translateY(0.25rem);
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.code-copy__feedback::after {
+  content: "";
+  position: absolute;
+  top: calc(50% - var(--arrow));
+  right: calc(-2 * (var(--arrow) - 0.5px));
+  border: var(--arrow) solid transparent;
+  border-left-color: #078662;
+}
+
+.code-copy__feedback.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+/* Math: KaTeX in ink with its own serif math faces, as on the personal blog.
+   KaTeX defaults to 1.21em, sized for fonts with a large x-height. Against
+   EB Garamond (x-height 0.405em vs KaTeX's 0.431em) 0.95em lines up the
+   lowercase and capital heights, so math reads at the size of the text.
+   Scoped to .post-body to outrank katex.min.css, which loads later and
+   sets `.katex { font: … 1.21em … }` at equal specificity. */
+.katex {
+  color: var(--ink);
+}
+
+.post-body .katex {
+  font-size: 0.95em;
+}
+
+.post-body .katex-display,
+.post-body .math-display {
+  clear: both;
+  margin: 1.5rem 0 0;
+}
+
+/* Long equations scroll on narrow screens instead of overflowing. */
+.post-body .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+
+.post-foot {
+  margin-top: 3rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+}
+
+/* ---------- Home artwork ---------- */
+
+/* Scenario tree search illustration (inline SVG,
+   scrubbed by scroll position via js/scroll-animation.js). */
+.panel--image .traj {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Mobile / tablet ---------- */
+@media (max-width: 991px) {
+  :root {
+    --header-h: 4.5rem;
+  }
+
+  .site-header {
+    padding-bottom: 1rem;
+    background-image: linear-gradient(var(--bg) 85%, var(--bg-transparent) 100%);
+  }
+
+  .menu-button {
+    display: block;
+  }
+
+  .main-nav {
+    display: none;
+    grid-column: 1 / -1;
+    padding-top: 1.5rem;
+  }
+
+  .main-nav__list {
+    grid-template-columns: 1fr;
+    row-gap: 1rem;
+  }
+
+  .main-nav__list > li {
+    height: auto;
+  }
+
+  .sub-nav {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .menu-toggle:checked ~ .header-grid .main-nav { display: block; }
+  .menu-toggle:checked ~ .header-grid .menu-open { display: none; }
+  .menu-toggle:checked ~ .header-grid .menu-close { display: inline; }
+  .menu-toggle:checked ~ .header-grid .menu-arrow { transform: rotate(180deg); }
+
+  .site-header:has(.menu-toggle:checked) {
+    background: var(--bg);
+    bottom: 0;
+    overflow-y: auto;
+  }
+
+  .home-main {
+    display: block;
+  }
+
+  .image-column {
+    position: relative;
+    height: 55vh;
+    padding-bottom: 0;
+  }
+
+  .statement {
+    min-height: 70vh;
+    padding-top: 3rem;
+    justify-content: flex-start;
+  }
+
+  .blog-main {
+    padding-top: calc(var(--header-h) + 2.5rem);
+  }
+
+  .post-row__title {
+    font-size: 1.2rem;
+  }
+
+  .post-row::before {
+    flex-basis: 2rem;
+  }
+
+  .post-row__tags {
+    padding-left: 2rem;
+  }
+}
