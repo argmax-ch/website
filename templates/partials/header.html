@@ -19,11 +19,11 @@
       <ul class="main-nav__list">
         {%- for item in config.extra.nav %}
         <li>
-          <a class="nav-item" href="{{ item.url | safe }}"{% if here is starting_with(item.url) %} aria-current="page"{% endif %}>{{ item.name }}</a>
+          <a class="nav-item" href="{% if item.url is starting_with("/") %}{{ get_url(path=item.url) | safe }}{% else %}{{ item.url | safe }}{% endif %}"{% if here is starting_with(item.url) %} aria-current="page"{% endif %}>{{ item.name }}</a>
           {%- if item.children %}
           <ul class="sub-nav">
             {%- for child in item.children %}
-            <li><a href="{{ child.url | safe }}">{{ child.name }}</a></li>
+            <li><a href="{% if child.url is starting_with("/") %}{{ get_url(path=child.url) | safe }}{% else %}{{ child.url | safe }}{% endif %}">{{ child.name }}</a></li>
             {%- endfor %}
           </ul>
           {%- endif %}

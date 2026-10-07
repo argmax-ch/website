@@ -13,8 +13,14 @@ jobs:
         with:
           tool: zola@0.22.1
 
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      # config.toml points at the production domain; override it with the
+      # URL GitHub Pages actually serves from (e.g. https://<org>.github.io/<repo>/).
       - name: Build site
-        run: zola build
+        run: zola build --base-url "${{ steps.pages.outputs.base_url }}"
 
       - name: Upload static files as artifact
         id: deployment

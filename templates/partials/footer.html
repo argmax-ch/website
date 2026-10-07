@@ -3,6 +3,6 @@
   {%- if not loop.first %}
   <span class="separator">|</span>
   {%- endif %}
-  <a href="{{ link.url | safe }}">{{ link.name }}</a>
+  <a href="{% if link.url is starting_with("/") %}{{ get_url(path=link.url) | safe }}{% else %}{{ link.url | safe }}{% endif %}">{{ link.name }}</a>
   {%- endfor %}
 </footer>

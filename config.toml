@@ -36,7 +36,7 @@ url = "/work/"
 children = [
   { name = "Core Technology", url = "/work/#technology" },
   { name = "Projects", url = "/work/#projects" },
-  { name = "Work with argmax", url = "/work/#partners/" },
+  { name = "Work with argmax", url = "/work/#partners" },
 ]
 
 [[extra.nav]]
