@@ -19,17 +19,32 @@
   });
 
   var statements = document.querySelectorAll(".statement");
+  var column = document.querySelector(".image-column");
+  // Mirrors the mobile breakpoint in styles.css, where the artwork is pinned
+  // in a band above the statements instead of beside them.
+  var stacked = window.matchMedia("(max-width: 991px)");
   var ticking = false;
+
+  // Maps scroll progress (0..1) onto the animation timeline (0..1).
+  // TODO: on mobile the band is empty at progress 0, since nothing has been
+  // drawn yet. Decide what a first-time visitor should see, e.g. start from
+  // a floor so the root and first branches are already drawn, only when
+  // `stacked.matches`, so desktop keeps its current behaviour.
+  function timeline(progress) {
+    return progress;
+  }
 
   function update() {
     ticking = false;
-    // Finish when the last statement reaches the top of the viewport.
+    // Finish when the last statement reaches the top of the visible text
+    // area: the viewport top, or the bottom of the pinned band on mobile.
     var last = statements[statements.length - 1];
+    var inset = stacked.matches && column ? column.offsetHeight : 0;
     var max = last
-      ? last.getBoundingClientRect().top + window.scrollY
+      ? last.getBoundingClientRect().top + window.scrollY - inset
       : document.documentElement.scrollHeight - window.innerHeight;
     var progress = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
-    var t = progress * total;
+    var t = timeline(progress) * total;
     anims.forEach(function (a) {
       a.currentTime = t;
     });

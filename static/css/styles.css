@@ -833,19 +833,42 @@ ul {
     overflow-y: auto;
   }
 
+  /* Stacked layout: the artwork stays pinned in a band at the top while the
+     statements scroll underneath it, so the scroll-scrubbed animation stays
+     in view. --band is the band's full height, header included. */
   .home-main {
     display: block;
+    --band: 58svh;
   }
 
   .image-column {
-    position: relative;
-    height: 55vh;
-    padding-bottom: 0;
+    z-index: 10;
+    height: var(--band);
+    /* Bleed to the screen edges so the bottom rule spans the full width. */
+    margin: 0 calc(-1 * var(--spacer));
+    padding: var(--header-h) var(--spacer) 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--ink);
+  }
+
+  /* Fade the bottom of the artwork into the rule. */
+  .panel--image {
+    -webkit-mask-image: linear-gradient(#000 80%, transparent);
+    mask-image: linear-gradient(#000 80%, transparent);
+  }
+
+  /* Size the SVG box to the artwork's 2:3 aspect so it can be centered
+     (its preserveAspectRatio pins it to the left otherwise). */
+  .panel--image .traj {
+    width: auto;
+    max-width: 100%;
+    aspect-ratio: 600 / 900;
+    margin: 0 auto;
   }
 
   .statement {
-    min-height: 70vh;
-    padding-top: 3rem;
+    min-height: calc(100svh - var(--band));
+    padding-top: 2rem;
     justify-content: flex-start;
   }
 
