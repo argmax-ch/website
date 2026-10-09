@@ -2,17 +2,17 @@
 title = "Argmax"
 
 [[extra.statements]]
-text = "Building decision support systems for navigating a world of uncertainty."
+text = "Building decision support systems for improving system and process performance."
 link = "Introducing argmax"
 url = "/about/"
 
 [[extra.statements]]
-text = "Optimizing for the worst case, so the best case takes care of itself."
+text = "Uncertainty is unavoidable. Poor decisions are not."
 link = "Learn more"
-url = "/work/#approach"
+url = "/about/#mission"
 
 [[extra.statements]]
-text = "Turning uncertainty into an advantage."
+text = "The results are decision policies that adapt as new information arrives and prove their value in your operations."
 link = "Learn more"
-url = "/work/#technology"
+url = "/work/#partners"
 +++

@@ -13,7 +13,7 @@
       {%- for s in section.extra.sections %}
       <section class="info-section" id="{{ s.id }}">
         <h2 class="info-section__title">{{ s.title }}</h2>
-        <p>{{ s.text }}</p>
+        <div class="info-section__text">{{ s.text | markdown | safe }}</div>
       </section>
       {%- endfor %}
     </div>

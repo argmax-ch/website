@@ -1,6 +1,6 @@
 base_url = "https://www.argmax.ch"
 title = "argmax"
-description = "Argmax builds decision systems that perform when it matters most — under uncertainty, in the worst case."
+description = "Argmax builds decision systems that perform when it matters most."
 default_language = "en"
 
 compile_sass = false
@@ -31,9 +31,9 @@ children = [
 name = "Our Work"
 url = "/work/"
 children = [
-  { name = "Core Technology", url = "/work/#technology" },
+  # { name = "Core Technology", url = "/work/#technology" },
   { name = "Projects", url = "/work/#projects" },
-  { name = "Work with argmax", url = "/work/#partners" },
+  { name = "Work With Us", url = "/work/#partners" },
 ]
 
 [[extra.nav]]
@@ -47,18 +47,18 @@ children = [
 name = "Blog"
 url = "/blog/"
 
-[[extra.footer]]
-name = "LinkedIn"
-url = "https://www.linkedin.com/"
+# [[extra.footer]]
+# name = "LinkedIn"
+# url = "https://www.linkedin.com/"
+
+# [[extra.footer]]
+# name = "Mailing List"
+# url = "/newsletter/"
 
 [[extra.footer]]
-name = "Mailing List"
-url = "/newsletter/"
+name = "info@argmax.ch"
+url = "stechschulteg@gmail.com"
 
-[[extra.footer]]
-name = "contact@argmax.ch"
-url = "mailto:contact@argmax.ch"
-
-[[extra.footer]]
-name = "Policies"
-url = "/policies/"
+# [[extra.footer]]
+# name = "Policies"
+# url = "/policies/"

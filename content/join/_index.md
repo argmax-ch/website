@@ -6,5 +6,5 @@ template = "info.html"
 [[extra.sections]]
 id = "careers"
 title = "Careers"
-text = "Unfortauntely, there are no open positions."
+text = "Unfortunately, there are no open positions."
 +++
